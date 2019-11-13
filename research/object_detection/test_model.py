@@ -1,5 +1,6 @@
 import numpy as np
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import six.moves.urllib as urllib
 import sys
 import tarfile
@@ -94,14 +95,19 @@ def run_inference_for_single_image(image, graph):
 
 for image_path in TEST_IMAGE_PATHS:
   image = Image.open(image_path)
+
+  img_name = image_path.split("/")
+  print(img_name[1])
   # the array based representation of the image will be used later in order to prepare the
   # result image with boxes and labels on it.
   image_np = load_image_into_numpy_array(image)
+  print("Images np loaded:::")
   # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
   image_np_expanded = np.expand_dims(image_np, axis=0)
   # Actual detection.
   output_dict = run_inference_for_single_image(image_np_expanded, detection_graph)
   # Visualization of the results of a detection.
+  # %matplotlib inline
   vis_util.visualize_boxes_and_labels_on_image_array(
       image_np,
       output_dict['detection_boxes'],
@@ -112,4 +118,6 @@ for image_path in TEST_IMAGE_PATHS:
       use_normalized_coordinates=True,
       line_thickness=8)
   plt.figure(figsize=IMAGE_SIZE)
-  plt.imshow(image_np)
+  imgplot = plt.imshow(image_np)
+  # plt.show()
+  plt.savefig(img_name[1])
