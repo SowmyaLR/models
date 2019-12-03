@@ -45,6 +45,7 @@ import functools
 import json
 import os
 import tensorflow as tf
+from tensorflow.contrib import framework as contrib_framework
 
 from object_detection.builders import dataset_builder
 from object_detection.builders import graph_rewriter_builder
@@ -70,7 +71,7 @@ flags.DEFINE_integer('ps_tasks', 0,
 flags.DEFINE_string('train_dir', '',
                     'Directory to save the checkpoints and training summaries.')
 
-flags.DEFINE_string('pipeline_config_path', '',
+flags.DEFINE_string('pipeline_config_path', 'training/pipeline.config',
                     'Path to a pipeline_pb2.TrainEvalPipelineConfig config '
                     'file. If provided, other configs are ignored')
 
@@ -84,7 +85,7 @@ flags.DEFINE_string('model_config_path', '',
 FLAGS = flags.FLAGS
 
 
-@tf.contrib.framework.deprecated(None, 'Use object_detection/model_main.py.')
+@contrib_framework.deprecated(None, 'Use object_detection/model_main.py.')
 def main(_):
   assert FLAGS.train_dir, '`train_dir` is missing.'
   if FLAGS.task == 0: tf.gfile.MakeDirs(FLAGS.train_dir)

@@ -1,19 +1,8 @@
 item {
   id: 1
-  name: 'sowmya'
+  name: 'TextField'
 }
-
 item {
   id: 2
-  name: 'srinidhi'
-}
-
-item {
-  id: 3
-  name: 'lakshmi'
-}
-
-item {
-  id: 4
-  name: 'ravichandran'
+  name: 'CheckBox'
 }

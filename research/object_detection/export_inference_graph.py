@@ -125,10 +125,10 @@ flags.DEFINE_string('input_shape', None,
 flags.DEFINE_string('pipeline_config_path', 'training/pipeline.config',
                     'Path to a pipeline_pb2.TrainEvalPipelineConfig config '
                     'file.')
-flags.DEFINE_string('trained_checkpoint_prefix', 'training/model.ckpt-466',
+flags.DEFINE_string('trained_checkpoint_prefix', 'training/model.ckpt-1020',
                     'Path to trained checkpoint, typically of the form '
                     'path/to/model.ckpt')
-flags.DEFINE_string('output_directory', 'inference_graph/', 'Path to write outputs.')
+flags.DEFINE_string('output_directory', 'inference_graph', 'Path to write outputs.')
 flags.DEFINE_string('config_override', '',
                     'pipeline_pb2.TrainEvalPipelineConfig '
                     'text proto to override pipeline_config_path.')

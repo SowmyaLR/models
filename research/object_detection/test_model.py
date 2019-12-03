@@ -1,5 +1,6 @@
 import numpy as np
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import six.moves.urllib as urllib
 import sys
 import tarfile
@@ -65,6 +66,7 @@ def run_inference_for_single_image(image, graph):
         # The following processing is only for single image
         detection_boxes = tf.squeeze(tensor_dict['detection_boxes'], [0])
         detection_masks = tf.squeeze(tensor_dict['detection_masks'], [0])
+
         # Reframe is required to translate mask from box coordinates to image coordinates and fit the image size.
         real_num_detection = tf.cast(tensor_dict['num_detections'][0], tf.int32)
         detection_boxes = tf.slice(detection_boxes, [0, 0], [real_num_detection, -1])
@@ -81,27 +83,35 @@ def run_inference_for_single_image(image, graph):
       # Run inference
       output_dict = sess.run(tensor_dict,
                              feed_dict={image_tensor: image})
-
+      # print("output dict:::::", output_dict)
       # all outputs are float32 numpy arrays, so convert types as appropriate
       output_dict['num_detections'] = int(output_dict['num_detections'][0])
+      # print('detection masks:::::', output_dict['num_detections'])
       output_dict['detection_classes'] = output_dict[
           'detection_classes'][0].astype(np.int64)
+      # print("detection classes::::", output_dict['detection_classes'])
       output_dict['detection_boxes'] = output_dict['detection_boxes'][0]
       output_dict['detection_scores'] = output_dict['detection_scores'][0]
       if 'detection_masks' in output_dict:
         output_dict['detection_masks'] = output_dict['detection_masks'][0]
+        # print("detection masks:::::", output_dict['detection_masks'])
   return output_dict
 
 for image_path in TEST_IMAGE_PATHS:
   image = Image.open(image_path)
+
+  img_name = image_path.split("/")
+  # print(img_name[1])
   # the array based representation of the image will be used later in order to prepare the
   # result image with boxes and labels on it.
   image_np = load_image_into_numpy_array(image)
+  # print("Images np loaded:::")
   # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
   image_np_expanded = np.expand_dims(image_np, axis=0)
   # Actual detection.
   output_dict = run_inference_for_single_image(image_np_expanded, detection_graph)
   # Visualization of the results of a detection.
+  # %matplotlib inline
   vis_util.visualize_boxes_and_labels_on_image_array(
       image_np,
       output_dict['detection_boxes'],
@@ -112,4 +122,8 @@ for image_path in TEST_IMAGE_PATHS:
       use_normalized_coordinates=True,
       line_thickness=8)
   plt.figure(figsize=IMAGE_SIZE)
-  plt.imshow(image_np)
+  imgplot = plt.imshow(image_np)
+  print("output dict:::",output_dict['detection_boxes'])
+  # print("image np expanded:::", image_np_expanded)
+  # plt.show()
+  plt.savefig(img_name[1])
